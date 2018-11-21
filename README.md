@@ -145,6 +145,7 @@ If your workload is hitting the IOPS limit for your volume:
 Pre-warm your ELB when expecting a sudden and significant increase in traffic to your application, therefor AWS needs to know start and end date, traffic expected (expected request rate per second) and packet size of typical request.
 
 _**Loadbalancer Errors**_
+
 	- 200 - successful response from the loadbalancer
 	- 4XX - Message indicates client side error
 		○ 400 - Bad or malformed request
