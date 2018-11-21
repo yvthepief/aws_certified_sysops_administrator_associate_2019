@@ -28,15 +28,18 @@
 Monitoring service to monitor your AWS resources, as well as the applications that you run on AWS. By default CloudWatch monitors in a 5 minute interval.
 
 _**Standard Metrics**_ - Host level metrics of EC2 instances consist of:
+
 	- CPU
 	- Network
 	- Disk
 	- Status Checks (EC2 host/EC2 instance)
+
 _**Custom Metrics**_ - minimum granularity is 1 minute. (Ram for example is a custom metric)
 
 _**Terminated Instances**_ - You can retrieve data from any terminated EC2 or ELB instance after its termination. CloudWatch Logs are stored indefinitely.
 
 _**Metric Granularity:**_
+
 	- 1 minute for detailed Monitoring
 	- 5 minutes for standard Monitoring
 
