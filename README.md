@@ -51,14 +51,18 @@ _**Dashboards**_ - CloudWatch Dashboards are multi-region and can display any wi
 ELB monitoring types: 4 different ways to monitor your load balancers: CloudWatch Metrics, Access Logs, Request tracing and CloudTrail logs.
 
 _**Access Logs:**_
+
 	- Access logs can store data where the EC2 instance has been deleted. F.E. when running an ASG for a fleet of EC2 instances, and EC2 instances are deleted, you still have the access logs available if access log is enabled on the ELB
+
 _**Request Tracing:**_
+
 	- Available for ALB only
 
 ## CloudTrail
 	- You can use CloudTrail to capture detailed information about the calls made to the ELB API and store them as logs in S3.
 
 _**CloudWatch VS CloudTrail**_
+
 	- CloudWatch monitors performance
 	- CloudTrail monitors API calls in the AWS Platform
 
@@ -68,26 +72,40 @@ Two types of engines: Memcached or Redis
 ### CPU Utilization
 
 _**Memcached:**_
+
 	- Multi-threaded
 	- Can handle loads up to 90%, when >90%, add more nodes
+
 _**Redis**_
+
 	- Not multi-threaded, scalingpoint = 90 / number of cores. F.E. 4 cores, CPU Utilization = 90/4=22,5%
+
 ### Swap Usage
 _**Memcached:**_
+
 	- Should be 0, or not exceed 50Mb
 	- If >50Mb increase memcached_connections_overhead parameter (defines the amount of mem to be reserved for memcached connections and other miscellaneous overhead)
+
 _**Redis:**_
+
 	- No SwapUsage metric, instead use reserved-memory
+
 ### Evictions
 An Eviction occurs when a new item is added and an old item must be removed due to lack of free space in the system
+
 _**Memcached:**_
+
 	- No recommended setting, choose threshold based off application
 	- Scale up (increase mem) or Scale out (more nodes)
+
 _**Redis:**_
+
 	- No recommended setting, choose threshold based off application
 	- Only Scale out
+
 ### Concurrent Connections
 _**Memcached & Redis:**_
+
 	- No recommended setting, choose threshold based off application
 	- If there is a large and sustained spike in the number of concurrent connections this can either mean a large traffic spike or your application is not releasing connections.
 	- Remember to set an alarm on number of concurrent connections for Elasticache
@@ -100,22 +118,29 @@ _**Memcached & Redis:**_
 
 ## AWS Config Rules
 _**Compliance checks:**_
+
 	- Trigger
 		○ Periodic
 		○ Configuration changes
 	- Managed Rules
 		○ About 40
 		○ Basic, but fundamental
+
 _**Permissions needed for Config:**_
+
 	- AWS Config requires an IAM Role with:
 		○ Read Only Permissions to the record resources
 		○ Write access to a S3 logging bucket
 		○ Publish access to SNS
+
 _**Restrict Access:**_
+
 	- Users need to be authenticated with AWS and have appropriate permissions set with IAM policies to gain access
 	- Only Admins needing to set up and manage config require full access
 	- Provide read-only permissions for Config day-to-day use
+
 _**Monitoring Config:**_
+
 	- Use CloudTrail with Config to provide deeper insight into resources
 	- Use CloudTrail to monitor access to Config, such as someone stopping the Config recorder
 
@@ -163,7 +188,9 @@ _**Loadbalancer Errors**_
 		○ 503 - Servers unavailable - no registered targets
 		○ 504 - Gateway timeout - application is not responding
 		○ 561 - Unauthorized - received error code from the ID Provider when trying to authenticate user
-Loadbalancer Metrics => CloudWatch
+
+_**Loadbalancer Metrics => CloudWatch**_
+
 	- Metrics for general health:
 		○ HealthyHostCount
 		○ UnHealthyHostCount
