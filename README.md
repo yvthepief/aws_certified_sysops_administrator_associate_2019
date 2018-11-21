@@ -149,27 +149,35 @@ _**Monitoring Config:**_
 
 ## EC2 Launch issues
 Remember the two common reasons for an instance failing to launch:
+
 	- InstanceLimitExceeded error (You have exceeded the default limit of number of ec2 instances you can launch in the region)
 	- InsufficientInstanceCapacity error (AWS does not currently have enough available On-Demand capacity to service your request)
 
 ## Elastic Block Storage
 
 2 different variants of SSD:
+
 	- GP2 - General Purpose 2 - boot volumes
 	- IO1 - Provisioned IOPS - I/O intensive, NoSQL/Relational Databases, latency sensitive workloads.
+
 IOPS (Input/Output Operations per Second) used to benchmark performance for SSD volumes.
 IOPS Capability is dependent on the size of your volume.
+
 	- GP2 volumes: (minimum 100 IOPS) 3 IOPS/GB up to maximum of 10.000 IOPS
 	- IO1 volumes: 50 IOPS/GB to a maximum of 32.000 IOPS
+
 If your workload is hitting the IOPS limit for your volume:
+
 	- Increase the volume size - (Only works if your GP2 volume is < 3333GB
 	- Change to Provisioned IOPS (IO1)
 
 ## Elastic Loadbalancer
 3 types of loadbalancers:
+
 	- Application loadbalancer (OSI lvl 7), checking http and https headers
 	- Network loadbalancer (OSI lvl 4), for high performance, static ip
 	- Classic loadbalancer, legacy
+
 Pre-warm your ELB when expecting a sudden and significant increase in traffic to your application, therefor AWS needs to know start and end date, traffic expected (expected request rate per second) and packet size of typical request.
 
 _**Loadbalancer Errors**_
@@ -205,6 +213,7 @@ _**Loadbalancer Metrics => CloudWatch**_
 	- Systems Manager is used to give visibility and control over your AWS infrastructure
 	- Integrates with CloudWatch dashboards
 	- Allows you to organize your inventory and logically group resources
+	
 Run Command enables you to perform common operational tasks on groups of instances simultaneously without needing log in to each one.
 
 
@@ -223,6 +232,7 @@ Run Command enables you to perform common operational tasks on groups of instanc
 
 ## RDS Multi AZ
 Multi AZ is for disaster recovery only, not for performance win.
+
 	- High Availability
 	- Backups are taken from secondary which avoids I/O suspension to the primary
 	- Restore's are taken from secondary which avoids I/O suspension to the primary
@@ -230,10 +240,12 @@ Multi AZ is for disaster recovery only, not for performance win.
 
 ## RDS Read Replica
 Read only instance of your database. Supported versions are:
+
 	- MySQL (5 read replica's)
 	- PostgreSQL (5 read replica's)
 	- MariaDB (5 read replica's)
 	- Aurora
+
 Read replica's can be stored in different regions.
 Replication is asynchronous.
 Read replica's can be built off Multi-AZ's databases.
