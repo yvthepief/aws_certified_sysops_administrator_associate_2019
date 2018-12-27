@@ -253,3 +253,178 @@ Read replica's themselves can be Multi-AZ.
 You can have read replica's of read replica's, but beware of latency.
 DB Snapshots or Automated backups can't be taken from read replica's.
 Key metric for read replica's is REPLICA LAG
+
+# Storage and Data Management
+
+## S3 Encryption
+	- Encryption In-Transit
+		○ SSL/TLS (HTTPS)
+	- Encryption At Rest
+		○ Server Side Encryption
+			§ SSE-S3
+			§ SSE-KMS
+			§ SSE-C
+		○ Client Side Encryption
+
+	- If you want to enforce the use of encryption for your files stored in S3, use an S3 bucket policy to deny all PUT requests that don't include the x-amz-server-side-encryption parameter in the request header
+
+## EC2 Types - EBS vs Instance Store
+	- Delete on Termination is default for all EBS root device volumes. You can set it to false, however buy only at instance creation time
+	- Additional volumes will persist automatically
+	- Instance store is known as ephemeral storage, meaning it will always be lost when instance is deleted
+
+## Volumes & Snapshots
+	- Volumes exist on EBS:
+		○ Virtual hard disk
+	- Snapshots exist on S3
+	- Snapshots are point in time copies of volumes
+	- Snapshots are incremental -  this means that only the blocks that have changed since your last snapshot are moved to S3
+	- To create a snapshot for Amazon EBS volumes that serve as root devices, you should stop the instance before taking a snapshot
+	- However you can take a snapshot while the instance is running
+	- You can create AMI's from both images and snapshots
+	- You can change EBS volume sizes on the fly, including changing the size and storage type
+	- Volumes will ALWAYS be in the same AZ as the EC2 instance
+	- To move an EC2 volume from one AZ/Region to another, take a snapshot or an image of it, then copy it to a new AZ/Region
+
+## Volumes vs Snapshots - Security
+	- Snapshots of encrypted volumes are encrypted automatically
+	- Volumes restored from encrypted snapshots are encrypted automatically
+	- You can share snapshots, but only if they are unencrypted
+		○ These snapshots can be shared with other AWS accounts or made public
+
+## Encryption and Downtime
+	- For most services, encryption needs to be activated on creation (EFS, RDS, EBS volumes)
+	- S3 is more flexible, can be put on anytime
+
+## KMS vs CloudHSM
+	- Both KMS and CloudHSM enable you to generate, store and manage your own encryption keys to encrypt data stored in AWS
+	- KMS is multi-tenancy and good for use cases which do not require dedicated hardware
+	- If your application has a requirement for dedicated hardware for managing keys, use CloudHSM
+	- KMS uses symmetric encryption (use same key for encrypting and decrypting), CloudHSM could use Asymmetric encryption (different keys for encrypting and decrypting)
+
+# Security and Compliance
+## AWS Shield
+## Aws Shield Advance provides:
+	- Always on, flow based monitoring of network traffic and active application monitoring to provide near real-time notifications of DDOS attacks.
+	- DDOS response team (DRT) 24x7 to manage and mitigate application layer DDOS attacks
+	- Protects you AWS bill against higher fees due to elastic loadbalancing (ELB), Amazon Cloud Front and Route53 usage spikes during DDOSS attack
+	- $3000.- a month
+
+## AWS Marketplace Security Products
+	- Can purchase security products from third party vendors on the AWS market place
+	- Firewalls, Hardened OS's, WAF's Antivirtus, Security Monitoring etc
+	- Free, Hourly, Monthly, Annual, BYOL etc
+	- CIS OS Hardening
+
+## Roles & Custom Policies
+	- You can create custom policies using the visual editor or using json
+	- You can now attach roles to ec2 instances at any time using the command line or aws console
+	- Once attached the role takes effect immediately
+	- Any policy change also takes effect immediately
+
+## MFA Reporting and IAM
+	- You can enable MFA using the command line and by using the console
+	- MFA can be enabled on both the root account and user accounts
+	- You can enforce the use of MFA with the CLI by using the STS token service
+	- You can report on who’s using MFA on a per user basis using credential reports
+
+## AWS Hypervisors
+	- Choose HVM over PV where possible
+	- PV is isolated by layers, Guest OS sits on Layer 1, Applications Layer 3
+	- Only AWS Administrators have access to hypervisors
+	- AWS staff do not have access to EC2, that is the responsibility as a customer
+	- All storage memory and RAM memory is scrubbed before it's delivered to you
+
+## Dedicated instances vs dedicated hosts
+	- Both dedicated instances and dedicated host have dedicated hardware
+	- Dedicated instances are charged by the instance, dedicated hosts are charge by the host
+	- If you have specific regulatory requirements or licensing conditions, choose dedicated hosts
+	- Dedicated instances may share the same hardware with other AWS instances from the same account that are not dedicated
+	- Dedicated hosts give you much better visibility in to things like sockets, cores and host id
+
+## AWS System Manager Run Command
+	- Commands can be applied to a group of systems based on AWS instance tags or by selecting manually
+	- SSM agent needs to be installed om al your managed instances
+	- The commands and parameters are defined in a system manager document
+	- Commands can be issued using AWS console, AWS CLI, AWS Tools for Windows PowerShell, Systems Manager Api or Amazon SDKs
+	- You can use this service with you on-premise systems as well as ec3 instance
+
+## AWS System Manager Parameter store
+	- Confidential information such as passwords, database connection strings, and license codes can be stored in SSM parameter store
+	- You can store values as plain text or you can encrypt the data
+	- You can reference these values by using their names
+	- You can use this services with ec2, CloudFormation , lambda, ec2 run command etc
+
+## AWS Config Rules with S3
+	- Be aware of the following config rules
+		○ No public read access
+		○ No public write access
+
+## AWS Inspector vs AWS trusted advisor
+	- AWS Inspector: 
+		○ Create "Assessment target"
+		○ Install agents on EC2 instances
+		○ Create "Assessment template"
+		○ Perform "Assessment run"
+		○ Review "Findings" against "Rules"
+		○ Rules Packages:
+			§ Common Vulnerabilities and Exposures
+			§ CIS Operating System security Configuration Benchmarks
+			§ Security Best Practices
+			§ Runtime behavior Analysis
+		○ Severity Levels for Rules in Amazon Inspector:
+			§ High
+			§ Medium
+			§ Low
+			§ Informational
+		○ Monitor the network, files system and process activity within the specified target
+		○ Compare wat it 'sees' to security rules
+		○ Report on security issues observed within target during run
+		○ Report findings and advise remediation
+	- Trusted Advisor
+		○ Cost optimization
+		○ Availability
+		○ Performance
+		○ Security (F.E. Security groups) 
+
+## Shared Responsibility Model
+	- AWS responsible of the cloud
+	- You responsible in the cloud
+
+## AWS Artifact
+Here you can download all AWS security and compliance documents
+
+## CloudHSM vs KMS
+	- Cloud HSM:
+		○ Tendency: Single
+		○ Scale & HA: HA service from AWS
+		○ Key Control: you
+		○ Integration: Broad AWS Support
+		○ Symmetry: Symmetric and asymmetric keys
+		○ Compliance: FIPS 140-2 & EAL-4
+		○ Price: $$
+	- KMS:
+		○ Tendency: Multi
+		○ Scale & HA: HA service from AWS
+		○ Key Control: you + AWS
+		○ Integration: Broad AWS Support
+		○ Symmetry: Symmetric keys
+		○ Compliance: good
+		○ Price: $
+
+## Encryption:
+	- Instant Encryption: S3
+	- Encryption with migration: DynamoDB, RDS, EFS and EBS
+	
+IAM:Passrole:
+Temporary allow passing role to a service or other account
+
+# Automation
+## Cloudformation
+Cloudformation allows you to manage, configure, and provision AWS infrastructure as code (YAML/JSON)
+	- Template exist of:
+	- Parameters: input custom values
+	- Conditions: e.g. provision resources based on environment
+	- Resources: Mandatory - the AWS resources to create
+	- Mappings: create custom mappings like Region: AMI
+	- Transforms: reference code located in S3 e.g. lambda code or reusable snippets of Cloudfromation code
